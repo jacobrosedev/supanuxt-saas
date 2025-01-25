@@ -1,10 +1,10 @@
 {
-  "name": "supanuxt-saas",
-  "version": "1.4.3",
+  "name": "tks-apts",
+  "version": "1.0.0",
   "author": {
-    "name": "Michael Dausmann",
-    "email": "mdausmann@gmail.com",
-    "url": "https://www.michaeldausmann.com/"
+    "name": "Jacob Rose",
+    "email": "jacob.r.rose96@gmail.com",
+    "url": ""
   },
   "license": "MIT",
   "private": true,
