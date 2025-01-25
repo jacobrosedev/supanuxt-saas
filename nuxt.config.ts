@@ -1,21 +1,26 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   debug: true,
+
   build: {
     transpile: ['trpc-nuxt']
   },
+
   typescript: {
     shim: false
   },
+
   modules: [
     '@nuxtjs/supabase',
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
     'nuxt-icon'
   ],
+
   imports: {
     dirs: ['./stores']
   },
+
   app: {
     head: {
       htmlAttrs: {
@@ -45,6 +50,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+
   runtimeConfig: {
     stripeSecretKey: process.env.STRIPE_SECRET_KEY,
     stripeEndpointSecret: process.env.STRIPE_ENDPOINT_SECRET,
@@ -57,11 +63,14 @@ export default defineNuxtConfig({
       siteRootUrl: process.env.URL || 'http://localhost:3000' // URL env variable is provided by netlify by default
     }
   },
+
   supabase: {
     redirect: false,
     redirectOptions: {
       login: '/signin',
       callback: '/confirm'
     }
-  }
+  },
+
+  compatibilityDate: '2025-01-25'
 });
