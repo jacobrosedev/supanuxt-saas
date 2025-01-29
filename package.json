@@ -46,8 +46,5 @@
     "trpc-nuxt": "^0.10.19",
     "vanilla-cookieconsent": "^3.0.0",
     "zod": "^3.22.4"
-  },
-  "overrides": {
-    "vue": "latest"
   }
 }
