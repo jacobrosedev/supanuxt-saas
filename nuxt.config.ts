@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   debug: true,
 
   build: {
-    transpile: ['trpc-nuxt']
+    transpile: ['trpc-nuxt', 'superjson']
   },
 
   typescript: {
