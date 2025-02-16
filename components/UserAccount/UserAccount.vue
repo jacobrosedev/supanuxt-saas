@@ -27,7 +27,10 @@
         tabindex="0"
         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
         <li v-if="user">{{ user.email }}</li>
+        <li><NuxtLink to="/profile">Profile</NuxtLink></li>
         <li><NuxtLink to="/account">Account</NuxtLink></li>
+        <li><NuxtLink to="/billing">Billing</NuxtLink></li>
+        <li><NuxtLink to="/settings">Settings</NuxtLink></li>
         <li><UserAccountSignout /></li>
         <UserAccountSwitch />
       </ul>
