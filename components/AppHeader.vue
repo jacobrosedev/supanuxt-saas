@@ -32,6 +32,7 @@
             class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
             <!-- Admin User -->
             <template v-if="true">
+              <h2>Admin Sidebar</h2>
               <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
               <li><NuxtLink to="/admin/finance">Finance</NuxtLink></li>
               
@@ -44,6 +45,7 @@
             <hr>
             <!-- Worker User -->
             <template v-if="true">
+              <h2>Worker Sidebar</h2>
               <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
               <li><NuxtLink to="/worker/requests">Requests</NuxtLink></li>
               <li><NuxtLink to="/worker/receipts">Receipts</NuxtLink></li>
@@ -55,6 +57,7 @@
             <hr>
             <!-- Tenant User -->
             <template v-if="true">
+              <h2>Tenant Sidebar</h2>
               <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
 
               <!-- Tenant Specific Routes -->
