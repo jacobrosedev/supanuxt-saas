@@ -7,5 +7,5 @@
 </script>
 
 <template>
-
+    <div>Admin Units Table</div>
 </template>
