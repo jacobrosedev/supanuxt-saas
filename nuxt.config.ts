@@ -53,11 +53,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     stripeSecretKey: process.env.STRIPE_SECRET_TEST_KEY, // STRIPE_SECRET_KEY
-    
-    subscriptionGraceDays: 3,
-    initialPlanName: 'Free Trial',
-    initialPlanActiveMonths: 1,
-    openAIKey: process.env.OPENAI_API_KEY,
+  
     public: {
       debugMode: true,
       siteRootUrl: process.env.URL || 'http://localhost:3000', // URL env variable is provided by netlify by default
@@ -73,5 +69,5 @@ export default defineNuxtConfig({
     }
   },
 
-  compatibilityDate: '2025-02-16'
+  compatibilityDate: '2025-02-16',
 });
