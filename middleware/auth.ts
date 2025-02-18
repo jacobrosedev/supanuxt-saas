@@ -1,13 +1,9 @@
 export default defineNuxtRouteMiddleware(() => {
+  // this middleware is used for protecting routes accessible to all users (not role specific)
   const user = useSupabaseUser();
-
-  console.log(user)
-
+  console.log("/middleware/auth", user.value)
+  // RBAC Page Navigation Tree
   if (!user.value) {
     return navigateTo('/');
-  } else {
-    if (user.value.role == "authenticated") {
-      return navigateTo('/apply/pending');
-    }
   }
 });
