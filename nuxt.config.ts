@@ -1,6 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   debug: true,
+  ssr: false,
 
   build: {
     transpile: ['trpc-nuxt']
