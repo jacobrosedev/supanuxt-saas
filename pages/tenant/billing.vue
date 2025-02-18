@@ -6,5 +6,7 @@
 
 
 <template>
-
+    <div>
+        <h2>Tenant Billing</h2>
+    </div>
 </template>
