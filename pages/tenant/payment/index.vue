@@ -1,13 +1,19 @@
 <script setup>
+// https://keith-mifsud.me/blog/build-and-deploy-nuxt3-static-site-with-pinia-and-stripe-checkout-on-firebase
+
+
+
+
+
 import {loadStripe} from '@stripe/stripe-js';
 const config = useRuntimeConfig();
 const stripe = await loadStripe(config.public.stripePublicTest);
-const { data: product } = await useFetch('/api/get-product')
+const { data: product } = await useFetch('/server/api/get-product')
 
 
 
 const handlePayment = async () => {
- const { data } = await useFetch('/api/create-session', {
+ const { data } = await useFetch('/server/api/create-session', {
    method: 'POST',
    body: { priceId: product.value.default_price }
  })
