@@ -32,31 +32,31 @@
             class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
             <!-- Admin User -->
             <template v-if="true">
-              <li><NuxtLink to="/finance">Finance</NuxtLink></li>
+              <li><NuxtLink to="/admin/finance">Finance</NuxtLink></li>
               
               <!-- Admin Specific Routes -->
-              <li><NuxtLink to="/units">Units</NuxtLink></li>
-              <li><NuxtLink to="/users">Users</NuxtLink></li>
-              <li><NuxtLink to="/leases">Leases</NuxtLink></li>
+              <li><NuxtLink to="/admin/units">Units</NuxtLink></li>
+              <li><NuxtLink to="/admin/users">Users</NuxtLink></li>
+              <li><NuxtLink to="/admin/leases">Leases</NuxtLink></li>
+              <li><NuxtLink to="/admin/requests">Requests</NuxtLink></li>
 
-              <li><NuxtLink to="/messages">Messages</NuxtLink></li>
-              <li><NuxtLink to="/requests">Requests</NuxtLink></li>
+              <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
             </template>
             <hr>
             <!-- Worker User -->
             <template v-if="true">
-              <li><NuxtLink to="/messages">Messages</NuxtLink></li>
-              <li><NuxtLink to="/requests">Requests</NuxtLink></li>
+              <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/worker/requests">Requests</NuxtLink></li>
 
               <!-- Worker Specific Routes -->
-              <li><NuxtLink to="/schedule">Schedule</NuxtLink></li>
-              <li><NuxtLink to="/earnings">Earnings</NuxtLink></li>
-              <li><NuxtLink to="/receipts">Receipts</NuxtLink></li>
+              <li><NuxtLink to="/worker/schedule">Schedule</NuxtLink></li>
+              <li><NuxtLink to="/worker/earnings">Earnings</NuxtLink></li>
+              <li><NuxtLink to="/worker/receipts">Receipts</NuxtLink></li>
             </template>
             <hr>
             <!-- Tenant User -->
             <template v-if="true">
-              <li><NuxtLink to="/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
 
               <!-- Tenant Specific Routes -->
               <li><NuxtLink to="/payment">Payment</NuxtLink></li>
