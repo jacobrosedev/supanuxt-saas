@@ -12,7 +12,7 @@
       const { data, error } = await supabase.auth.resetPasswordForEmail(
         email.value,
         {
-          redirectTo: `${config.public.siteRootUrl}/resetpassword`
+          redirectTo: `${config.public.siteRootUrl}/u/resetpassword`
         }
       );
       if (error) throw error;

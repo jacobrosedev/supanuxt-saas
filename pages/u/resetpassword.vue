@@ -16,7 +16,7 @@
       if (error) throw error;
       else {
         notifyStore.notify('password changed', NotificationType.Success);
-        navigateTo('/signin', { replace: true }); // navigate to signin because it is best practice although the auth session seems to be valid so it immediately redirects to dashboard
+        navigateTo('/', { replace: true }); // navigate to signin because it is best practice although the auth session seems to be valid so it immediately redirects to dashboard
       }
     } catch (error) {
       notifyStore.notify(error, NotificationType.Error);
