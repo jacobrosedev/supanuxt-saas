@@ -1,15 +1,18 @@
 <script setup lang="ts">
-  const user = useSupabaseUser();
+definePageMeta({
+    middleware: ['rbac']
+});
+const user = useSupabaseUser();
 
-  watch(
-    user,
-    () => {
-      if (user.value && user.value.role!="authenticated") {
-        return navigateTo('/dashboard');
-      }
-    },
-    { immediate: true }
-  );
+watch(
+  user,
+  () => {
+    if (user.value && user.value.role!="authenticated") {
+      return navigateTo('/dashboard');
+    }
+  },
+  { immediate: true }
+);
 </script>
 <template>
   <div>
