@@ -60,9 +60,9 @@
 
               <!-- Tenant Specific Routes -->
               <li><NuxtLink to="/payment">Payment</NuxtLink></li>
-              <li><NuxtLink to="/request">Request</NuxtLink></li>
-              <li><NuxtLink to="/billing">Billing</NuxtLink></li>
-              <li><NuxtLink to="/lease">Lease</NuxtLink></li>
+              <li><NuxtLink to="/tenant/request">Request</NuxtLink></li>
+              <li><NuxtLink to="/tenant/billing">Billing</NuxtLink></li>
+              <li><NuxtLink to="/tenant/lease">Lease</NuxtLink></li>
             </template>
           </ul>
         </div>
