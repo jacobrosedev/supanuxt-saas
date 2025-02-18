@@ -33,7 +33,7 @@
             <!-- Admin User -->
             <template v-if="true">
               <h2>Admin Sidebar</h2>
-              <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/u/messages">Messages</NuxtLink></li>
               <li><NuxtLink to="/admin/finance">Finance</NuxtLink></li>
               
               <!-- Admin Specific Routes -->
@@ -46,19 +46,19 @@
             <!-- Worker User -->
             <template v-if="true">
               <h2>Worker Sidebar</h2>
-              <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
-              <li><NuxtLink to="/worker/requests">Requests</NuxtLink></li>
-              <li><NuxtLink to="/worker/receipts">Receipts</NuxtLink></li>
+              <li><NuxtLink to="/u/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/w/requests">Requests</NuxtLink></li>
+              <li><NuxtLink to="/w/receipts">Receipts</NuxtLink></li>
 
               <!-- Worker Specific Routes -->
-              <li><NuxtLink to="/worker/schedule">Schedule</NuxtLink></li>
-              <li><NuxtLink to="/worker/earnings">Earnings</NuxtLink></li>
+              <li><NuxtLink to="/w/schedule">Schedule</NuxtLink></li>
+              <li><NuxtLink to="/w/earnings">Earnings</NuxtLink></li>
             </template>
             <hr>
             <!-- Tenant User -->
             <template v-if="true">
               <h2>Tenant Sidebar</h2>
-              <li><NuxtLink to="/user/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/u/messages">Messages</NuxtLink></li>
 
               <!-- Tenant Specific Routes -->
               <li><NuxtLink to="/tenant/payment">Payment</NuxtLink></li>

@@ -80,7 +80,7 @@
         </div>
         <NuxtLink
           id="forgotPasswordLink"
-          to="/forgotpassword"
+          to="/u/forgotpassword"
           class="text-right block"
           >Forgot your password?</NuxtLink
         >

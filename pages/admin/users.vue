@@ -6,5 +6,8 @@
 </script>
 
 <template>
-    <div>Admin Units Table</div>
+    <div>
+        <h2>Admin Users Table</h2>
+        <p>Users: Applicants, Tenants, Workers, Admins</p>
+    </div>
 </template>
