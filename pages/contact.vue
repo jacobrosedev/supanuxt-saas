@@ -9,7 +9,7 @@
     <!-- use this icon for adding my website to the contact page -->
     <a
       title="github"
-      href="https://github.com/JavascriptMick/supanuxt-saas">
+      href="https://github.com/jacobrosedev">
       <Icon name="mdi:github" />
     </a>
 
