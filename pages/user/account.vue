@@ -1,4 +1,11 @@
 <script setup lang="ts">
+  // this page allows the user to edit data directly related to their account
+  // the user can update:
+  // profile picture
+  // email, password and phone
+  // billing info & payment settings
+  // display preferences
+
   import { storeToRefs } from 'pinia';
   import { ACCOUNT_ACCESS } from '~~/prisma/account-access-enum';
 

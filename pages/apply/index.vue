@@ -1,26 +1,40 @@
 <script setup lang="ts">
+
+
+
+
+// this page allows public users to create a supabase user, but then redirects them to either
+// tenant or worker based on their initial selection apply to TKS apartments as either a worker, or tenant
+// through a sequence of forms.
+// 
+
+
+
+
+
   const user = useSupabaseUser();
   const supabase = useSupabaseClient();
 
-  const accountStore = useAccountStore();
   const notifyStore = useNotifyStore();
 
   const loading = ref(false);
   const email = ref('');
   const password = ref('');
-  const config = useRuntimeConfig();
+  const confirmPassword = ref('');
+  const signUpOk = ref(false);
 
-  const handleStandardSignin = async () => {
-    console.log(
-      `handleStandardSignin email.value:${email.value}, password.value:${password.value}`
-    );
+  const handleStandardSignup = async () => {
     try {
       loading.value = true;
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email: email.value,
         password: password.value
       });
-      if (error) throw error;
+      if (error) {
+        throw error;
+      } else {
+        signUpOk.value = true;
+      }
     } catch (error) {
       notifyStore.notify(error, NotificationType.Error);
     } finally {
@@ -28,27 +42,8 @@
     }
   };
 
-  const handleGoogleSignin = async () => {
-    console.log('handleGoogleSignin');
-    try {
-      loading.value = true;
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${config.public.siteRootUrl}/confirm`
-        }
-      });
-      if (error) throw error;
-    } catch (error) {
-      notifyStore.notify(error, NotificationType.Error);
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  watchEffect(async () => {
+  watchEffect(() => {
     if (user.value) {
-      await accountStore.init();
       navigateTo('/dashboard', { replace: true });
     }
   });
@@ -56,8 +51,8 @@
 <template>
   <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
     <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold text-center">Sign in</h1>
-      <form @submit.prevent="handleStandardSignin" class="space-y-4">
+      <h1 class="text-3xl font-bold text-center">Sign up</h1>
+      <form @submit.prevent="handleStandardSignup" class="space-y-4">
         <div>
           <label for="email" class="block mb-2 font-bold">Email</label>
           <input
@@ -78,28 +73,44 @@
             placeholder="Enter your password"
             required />
         </div>
-        <NuxtLink
-          id="forgotPasswordLink"
-          to="/forgotpassword"
-          class="text-right block"
-          >Forgot your password?</NuxtLink
-        >
+        <div>
+          <label for="confirmPassword" class="block mb-2 font-bold"
+            >Confirm Password</label
+          >
+          <input
+            v-model="confirmPassword"
+            id="confirmPassword"
+            type="password"
+            class="w-full p-2 border border-gray-400 rounded-md"
+            placeholder="Confirm your password"
+            required />
+        </div>
         <button
-          :disabled="loading || password === ''"
+          :disabled="loading || password === '' || confirmPassword !== password"
           type="submit"
           class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
-          Sign in
+          Sign up
         </button>
+
+        <p v-if="signUpOk" class="mt-4 text-lg text-center">
+          You have successfully signed up. Please check your email for a link to
+          confirm your email address and proceed.
+        </p>
       </form>
       <p class="text-center">or</p>
       <button
-        @click="handleGoogleSignin()"
+        @click="supabase.auth.signInWithOAuth({ provider: 'google' })"
         class="w-full py-2 text-white bg-red-600 rounded-md hover:bg-red-700">
         <span class="flex items-center justify-center space-x-2">
           <Icon name="fa-brands:google" class="w-5 h-5" />
-          <span>Sign in with Google</span>
+          <span>Sign up with Google</span>
         </span>
       </button>
+      <p class="mt-4 text-xs text-center text-gray-500">
+        By proceeding, I agree to the
+        <NuxtLink to="/privacy">Privacy Statement</NuxtLink> and
+        <NuxtLink to="/terms">Terms of Service</NuxtLink>
+      </p>
     </div>
   </div>
 </template>

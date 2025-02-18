@@ -1,10 +1,17 @@
 <template>
   <div class="prose lg:prose-xl m-5">
-    <h1>Contact Us</h1>
+    <h1>Contact TKS Apartments</h1>
 
     <p>
-      Contact SupaNuxt SaaS on <a href="https://github.com/JavascriptMick/supanuxt-saas">github</a>
+      <a href="contact@tksapts.com">contact@tksapts.com</a>
     </p>
+
+    <!-- use this icon for adding my website to the contact page -->
+    <a
+      title="github"
+      href="https://github.com/JavascriptMick/supanuxt-saas">
+      <Icon name="mdi:github" />
+    </a>
 
   </div>
 </template>
