@@ -1,6 +1,30 @@
 <script setup lang="ts">
   const user = useSupabaseUser();
-  // const { isAdmin, isWorker, isTenant } = [ true, true, true ] //useRoles()
+  const { isAdmin, isWorker, isTenant } = useRoles()
+  // galaxy brain idea is to ruin the current /admin, /worker, /tenant file structure split
+  //  and create a tooling system for all role access tools like "/dashboard" or "/messages"
+  // pages/
+  // ├── [tool]/                # tool = dashboard|messages
+  // │   ├── index.vue          # Base route with permission check
+  // │   └── [role].vue         # Dynamically handles admin|tenant|worker
+  // *this solves permission check, and dynamic component loads
+  //
+  // Example above is a programmatic version of this one below:
+  //  pages/
+  // ├── dashboard/
+  // │   ├── index.vue          # Base dashboard, checks permissions
+  // │   ├── admin.vue          # /dashboard/admin
+  // │   ├── tenant.vue         # /dashboard/tenant
+  // │   └── worker.vue         # /dashboard/worker
+  // ├── messages/
+  // │   ├── index.vue          # Base messages hub
+  // │   ├── admin.vue          # /messages/admin
+  // │   ├── tenant.vue         # /messages/tenant
+  // │   └── worker.vue         # /messages/worker
+  // 
+  // Simplifying this structure results in less RBAC middleware,
+  //   and the middleware used to load tools is easily maintainable.
+  // Every tool added after is just a string "/dashboard", or "/messages"
 </script>
 
 <template>
@@ -31,22 +55,24 @@
           <ul tabindex="0"
             class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
             <!-- Admin User -->
-            <template v-if="true">
+            <template v-if="isAdmin">
               <h2>Admin Sidebar</h2>
-              <li><NuxtLink to="/u/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/auth/messages">Messages</NuxtLink></li>
               <li><NuxtLink to="/admin/finance">Finance</NuxtLink></li>
               
               <!-- Admin Specific Routes -->
               <li><NuxtLink to="/admin/units">Units</NuxtLink></li>
               <li><NuxtLink to="/admin/requests">Requests</NuxtLink></li>
+              
               <li><NuxtLink to="/admin/users">Users</NuxtLink></li>
               <li><NuxtLink to="/admin/leases">Leases</NuxtLink></li>
+              <li><NuxtLink to="/admin/requests">Complaints</NuxtLink></li>
             </template>
             <hr>
             <!-- Worker User -->
-            <template v-if="true">
+            <template v-if="isWorker">
               <h2>Worker Sidebar</h2>
-              <li><NuxtLink to="/u/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/auth/messages">Messages</NuxtLink></li>
               <li><NuxtLink to="/w/requests">Requests</NuxtLink></li>
               <li><NuxtLink to="/w/receipts">Receipts</NuxtLink></li>
 
@@ -56,13 +82,14 @@
             </template>
             <hr>
             <!-- Tenant User -->
-            <template v-if="true">
+            <template v-if="isTenant">
               <h2>Tenant Sidebar</h2>
-              <li><NuxtLink to="/u/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/auth/messages">Messages</NuxtLink></li>
+              <li><NuxtLink to="/tenant/request">Request</NuxtLink></li>
+              <li><NuxtLink to="/tenant/request">Complaint</NuxtLink></li>
 
               <!-- Tenant Specific Routes -->
               <li><NuxtLink to="/tenant/payment">Payment</NuxtLink></li>
-              <li><NuxtLink to="/tenant/request">Request</NuxtLink></li>
               <li><NuxtLink to="/tenant/billing">Billing</NuxtLink></li>
               <li><NuxtLink to="/tenant/lease">Lease</NuxtLink></li>
             </template>
