@@ -26,6 +26,7 @@
       notifyStore.notify(error, NotificationType.Error);
     } finally {
       loading.value = false;
+      notifyStore.notify("TKS sign-up email sent!", NotificationType.Success);
     }
   };
 
@@ -36,9 +37,9 @@
   });
 </script>
 <template>
-  <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
+  <div class="flex flex-col items-center pt-16 h-screen bg-gray-100">
     <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold text-center">Sign up</h1>
+      <h1 class="text-3xl font-bold text-center">TKS Apartments Sign up</h1>
       <form @submit.prevent="handleStandardSignup" class="space-y-4">
         <div>
           <label for="email" class="block mb-2 font-bold">Email</label>
@@ -72,11 +73,22 @@
             placeholder="Confirm your password"
             required />
         </div>
+
+        <!-- Create a new account or Forgot your password? -->
+        <div class="block w-full inline-flex justify-around">
+          <NuxtLink
+            id="forgotPasswordLink"
+            to="/"
+            class="bg-gray-200 rounded-md hover:bg-gray-400 px-2"
+            >Already have an account?</NuxtLink
+          >
+        </div>
+
         <button
           :disabled="loading || password === '' || confirmPassword !== password"
           type="submit"
           class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
-          Sign up
+          Sign up with Email
         </button>
 
         <p v-if="signUpOk" class="mt-4 text-lg text-center">
@@ -84,13 +96,12 @@
           confirm your email address and proceed.
         </p>
       </form>
-      <p class="text-center">or</p>
       <button
         @click="supabase.auth.signInWithOAuth({ provider: 'google' })"
         class="w-full py-2 text-white bg-red-600 rounded-md hover:bg-red-700">
         <span class="flex items-center justify-center space-x-2">
           <Icon name="fa-brands:google" class="w-5 h-5" />
-          <span>Sign up with Google</span>
+          <span>Google sign up</span>
         </span>
       </button>
       <p class="mt-4 text-xs text-center text-gray-500">

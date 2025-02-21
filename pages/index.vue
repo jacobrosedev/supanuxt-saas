@@ -49,7 +49,7 @@
   watchEffect(async () => {
     if (user.value) {
       await accountStore.init();
-      navigateTo('/dashboard', { replace: true });
+      // navigateTo('/dashboard', { replace: true });
     }
   });
 </script>
@@ -78,26 +78,36 @@
             placeholder="Enter your password"
             required />
         </div>
-        <NuxtLink
-          id="forgotPasswordLink"
-          to="/u/forgotpassword"
-          class="text-right block"
-          >Forgot your password?</NuxtLink
-        >
+        <!-- Create a new account or Forgot your password? -->
+        <div class="block w-full inline-flex justify-around">
+          <NuxtLink
+            id="forgotPasswordLink"
+            to="/signup"
+            class="bg-gray-200 rounded-md hover:bg-gray-400 px-2"
+            >Create a new account!</NuxtLink
+          >
+          <NuxtLink
+            id="forgotPasswordLink"
+            to="/forgot"
+            class="bg-gray-200 rounded-md hover:bg-gray-400 px-2"
+            >Forgot your password?</NuxtLink
+          >
+        </div>
+        
         <button
           :disabled="loading || password === ''"
           type="submit"
           class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
-          Sign in
+          Login with Email
         </button>
       </form>
-      <p class="text-center">or</p>
+
       <button
         @click="handleGoogleSignin()"
         class="w-full py-2 text-white bg-red-600 rounded-md hover:bg-red-700">
         <span class="flex items-center justify-center space-x-2">
           <Icon name="fa-brands:google" class="w-5 h-5" />
-          <span>Sign in with Google</span>
+          <span>Google Login</span>
         </span>
       </button>
     </div>
