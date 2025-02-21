@@ -104,6 +104,7 @@ watchEffect(() => {
 
       <form @submit.prevent="verifyPhone()" class="space-y-4">
         
+        <!-- first row of inputs -->
         <div class="inline-flex w-full gap-3">
           <div>
             <label for="first" class="block mb-2 font-bold">First name:</label>
@@ -130,34 +131,10 @@ watchEffect(() => {
           </div>
         </div>
 
+        <!-- second row of inputs -->
         <div class="inline-flex w-full gap-3">
-          <div>
-            <label for="role" class="block mb-2 font-bold">Role:</label>
-            <select
-              id="role"
-              v-model="role"
-              class="w-full p-2 border border-gray-400 rounded-md dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
-              required
-            >
-              <option value="" disabled>Select:</option>
-              <option value="tenant">Tenant</option>
-              <option value="worker">Worker</option>              
-            </select>
-          </div>
 
-          <div>
-            <label for="dob" class="block mb-2 font-bold">Date of birth:</label>
-            <input
-              :value="dobFormat"
-            @input="updateDob($event.target.value)"
-              id="dob"
-              type="text"
-              class="w-[124px] p-2 border border-gray-400 rounded-md"
-              placeholder="MM/DD/YYYY"
-              maxlength="10"
-              required />
-          </div>
-
+          <!-- this should be it's own /component with coupled /composable -->
           <div>
             <label for="phone" class="block mb-2 font-bold">Phone:</label>
             <input
@@ -165,12 +142,40 @@ watchEffect(() => {
               @input="updatePhone($event.target.value)"
               id="phone"
               type="phone"
-              class="w-[148px] p-2 border border-gray-400 rounded-md"
+              class="w-[128px] p-2 border border-gray-400 rounded-md"
               placeholder="(321) 654-0987"
               maxlength="14"
               required
             />
           </div>
+
+          <!-- this should be it's own /component with coupled /composable -->
+          <div>
+            <label for="dob" class="block mb-2 font-bold">Date of birth:</label>
+            <input
+              :value="dobFormat"
+            @input="updateDob($event.target.value)"
+              id="dob"
+              type="text"
+              class="w-[116px] p-2 border border-gray-400 rounded-md"
+              placeholder="MM/DD/YYYY"
+              maxlength="10"
+              required />
+          </div>
+
+          <div>
+            <label for="role" class="block mb-2 font-bold">Role:</label>
+            <select
+              id="role"
+              v-model="role"
+              class="w-[100px] p-2 border border-gray-400 rounded-md"
+              required
+            > <option value="" disabled>Select:</option>
+              <option value="tenant">Tenant</option>
+              <option value="worker">Worker</option>              
+            </select>
+          </div>
+
 
         </div>
         
