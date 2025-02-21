@@ -1,30 +1,6 @@
 <script setup lang="ts">
   const user = useSupabaseUser();
   const { isAdmin, isWorker, isTenant } = useRoles()
-  // galaxy brain idea is to ruin the current /admin, /worker, /tenant file structure split
-  //  and create a tooling system for all role access tools like "/dashboard" or "/messages"
-  // pages/
-  // ├── [tool]/                # tool = dashboard|messages
-  // │   ├── index.vue          # Base route with permission check
-  // │   └── [role].vue         # Dynamically handles admin|tenant|worker
-  // *this solves permission check, and dynamic component loads
-  //
-  // Example above is a programmatic version of this one below:
-  //  pages/
-  // ├── dashboard/
-  // │   ├── index.vue          # Base dashboard, checks permissions
-  // │   ├── admin.vue          # /dashboard/admin
-  // │   ├── tenant.vue         # /dashboard/tenant
-  // │   └── worker.vue         # /dashboard/worker
-  // ├── messages/
-  // │   ├── index.vue          # Base messages hub
-  // │   ├── admin.vue          # /messages/admin
-  // │   ├── tenant.vue         # /messages/tenant
-  // │   └── worker.vue         # /messages/worker
-  // 
-  // Simplifying this structure results in less RBAC middleware,
-  //   and the middleware used to load tools is easily maintainable.
-  // Every tool added after is just a string "/dashboard", or "/messages"
 </script>
 
 <template>
