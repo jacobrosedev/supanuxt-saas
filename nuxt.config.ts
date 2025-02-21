@@ -52,18 +52,6 @@ export default defineNuxtConfig({
     }
   },
 
-  router: {
-    middleware: {
-      // Global middleware
-      'auth': '~/middleware/auth',
-      
-      // Route-specific middleware
-      '/admin/**': '~/middleware/admin',
-      '/profile/**': '~/middleware/profile',
-      '/api/**': ['~/middleware/auth', '~/middleware/api'],
-    }
-  },
-
   supabase: {
     redirect: false,
     redirectOptions: {
