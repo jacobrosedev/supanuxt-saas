@@ -17,107 +17,95 @@
 
 
 
+// /apply handles dynamic component loading based on a supabase
+//   db connection to the user.value.raw_user_meta_data
+// using supabase to save raw_user_meta_data at each "checkpoint" in the process,
+//   ensures we can scan back to where we left off (ex.page reload)
+// once the application process is completed, we move the temporary json data into a special
+// table for all applicants
 
 
-  const user = useSupabaseUser();
-  const supabase = useSupabaseClient();
-
-  const notifyStore = useNotifyStore();
-
-  const loading = ref(false);
-  const email = ref('');
-  const password = ref('');
-  const confirmPassword = ref('');
-  const signUpOk = ref(false);
-
-  const handleStandardSignup = async () => {
-    try {
-      loading.value = true;
-      const { data, error } = await supabase.auth.signUp({
-        email: email.value,
-        password: password.value
-      });
-      if (error) {
-        throw error;
-      } else {
-        signUpOk.value = true;
+// Send Phone verification code
+const sendResetPasswordLink = async () => {
+  try {
+    loading.value = true;
+    const { data, error } = await supabase.auth.resetPasswordForEmail(
+      email.value,
+      {
+        redirectTo: `${config.public.siteRootUrl}/auth/reset`
       }
-    } catch (error) {
-      notifyStore.notify(error, NotificationType.Error);
-    } finally {
-      loading.value = false;
-    }
-  };
+    );
+    if (error) throw error;
+    else
+      notifyStore.notify(
+        'Password Reset link sent, check your email.',
+        NotificationType.Success
+      );
+  } catch (error) {
+    notifyStore.notify(error, NotificationType.Error);
+  } finally {
+    loading.value = false;
+  }
+};
 
-  watchEffect(() => {
-    if (user.value) {
-      navigateTo('/dashboard', { replace: true });
-    }
-  });
+
+function applyAs() { return  }
+
+const user = useSupabaseUser();
+const supabase = useSupabaseClient();
+const notifyStore = useNotifyStore();
+const loading = ref(false);
+
+const script = [ // application control flow
+  'phone', 'name',
+  'tenant', 'worker',
+  'rental', 'skills',
+]
+watchEffect(() => {
+  if (user.value) {
+    // navigateTo('/auth/verify', { replace: true });
+  }
+});
 </script>
-<template>
-  <div class="flex flex-col items-center justify-center h-screen bg-gray-100">
-    <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold text-center">Sign up</h1>
-      <form @submit.prevent="handleStandardSignup" class="space-y-4">
-        <div>
-          <label for="email" class="block mb-2 font-bold">Email</label>
-          <input
-            v-model="email"
-            id="email"
-            type="email"
-            class="w-full p-2 border border-gray-400 rounded-md"
-            placeholder="Enter your email"
-            required />
-        </div>
-        <div>
-          <label for="password" class="block mb-2 font-bold">Password</label>
-          <input
-            v-model="password"
-            id="password"
-            type="password"
-            class="w-full p-2 border border-gray-400 rounded-md"
-            placeholder="Enter your password"
-            required />
-        </div>
-        <div>
-          <label for="confirmPassword" class="block mb-2 font-bold"
-            >Confirm Password</label
-          >
-          <input
-            v-model="confirmPassword"
-            id="confirmPassword"
-            type="password"
-            class="w-full p-2 border border-gray-400 rounded-md"
-            placeholder="Confirm your password"
-            required />
-        </div>
-        <button
-          :disabled="loading || password === '' || confirmPassword !== password"
-          type="submit"
-          class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
-          Sign up
-        </button>
 
-        <p v-if="signUpOk" class="mt-4 text-lg text-center">
-          You have successfully signed up. Please check your email for a link to
-          confirm your email address and proceed.
-        </p>
-      </form>
-      <p class="text-center">or</p>
-      <button
-        @click="supabase.auth.signInWithOAuth({ provider: 'google' })"
-        class="w-full py-2 text-white bg-red-600 rounded-md hover:bg-red-700">
-        <span class="flex items-center justify-center space-x-2">
-          <Icon name="fa-brands:google" class="w-5 h-5" />
-          <span>Sign up with Google</span>
-        </span>
-      </button>
-      <p class="mt-4 text-xs text-center text-gray-500">
-        By proceeding, I agree to the
-        <NuxtLink to="/privacy">Privacy Statement</NuxtLink> and
-        <NuxtLink to="/terms">Terms of Service</NuxtLink>
-      </p>
+<template><div class="container mx-auto p-6 border">
+
+  <div class="text-center mb-12">
+    <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">
+      Apply to TKS Apartments
+    </h2>
+  </div>
+
+  <div class="flex flex-col items-center pt-8 h-screen bg-gray-100 border">
+    <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg ">
+      <h2>Update Name & Phone:</h2>
+      <div class="flex gap-4">
+        <button @click="applyAs()">Tenant</button>
+      </div>
+      <h2>it actually makes sense for tenant to /apply and for workers to be added by an admin...</h2>
     </div>
   </div>
-</template>
+
+  <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold text-center">Forgot Pasword</h1>
+    <form @submit.prevent="sendResetPasswordLink" class="space-y-4">
+      <div>
+        <label for="email" class="block mb-2 font-bold">Email</label>
+        <input
+          v-model="email"
+          id="email"
+          type="email"
+          class="w-full p-2 border border-gray-400 rounded-md"
+          placeholder="Enter your email"
+          required />
+      </div>
+      <button
+        :disabled="loading || email === ''"
+        type="submit"
+        class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+        Send Reset Password Link
+      </button>
+    </form>
+  </div>
+
+</div></template>
