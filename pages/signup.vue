@@ -32,7 +32,8 @@
 
   watchEffect(() => {
     if (user.value) {
-      navigateTo('/dashboard', { replace: true });
+      // start application process from signup.vue
+      navigateTo('/apply', { replace: true });
     }
   });
 </script>
