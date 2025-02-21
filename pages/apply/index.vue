@@ -25,6 +25,13 @@
 // table for all applicants
 
 
+
+// we use a card system to display steps in the application process,
+// each step submits a form, and once supabase pings back 'good', we
+// increment the integer used to distinguish the step sent back.
+// supabase returns that the data was saved properly, and has a
+// 'current page': int() saved in the Applicant
+
 // Send Phone verification code
 const sendResetPasswordLink = async () => {
   try {
