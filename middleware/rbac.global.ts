@@ -11,39 +11,45 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   ]
   // role can see all routes requiring user authentication
   const authenticatedRoutes = [
-    '/dashboard', '/messages', '/auth', '/verify',
+    '/dashboard', '/messages', '/auth', '/apply', '/verify',
     '/auth/delete', '/auth/reset' // account, deletion + password reset
   ]
   // role can see submitted applications
-  const roleSharedRoutes = [...publicRoutes, ...authenticatedRoutes, '/dashboard']
+  const roleSharedRoutes = [...publicRoutes, ...authenticatedRoutes]
   const applicantRoutes = [...roleSharedRoutes,]
   const tenantRoutes = [...roleSharedRoutes,]
   const workerRoutes = [...roleSharedRoutes,]
   const adminRoutes = [...roleSharedRoutes,]
 
-  // add public user-hidden & non-shared routes to roles
+  // add public hidden-to-user routes
   publicRoutes.push('/signup')
-  authenticatedRoutes.push('/apply') // /apply !important
 
 
+  // ###########################################################################
+  // ####################### PUBLIC LIMITERS & REDIRECTS #######################
+  // ###########################################################################
   // if public, and (to.path) NOT in public, redirect to public '/' home login
   if (!user.value) {
     console.log("no supabase user.value, checking publicRoutes...")
     if (!publicRoutes.includes(to.path)) return navigateTo('/') // public home
   }
 
+  // ###########################################################################
+  // ########################### USER CONFIRMATION #############################
+  // ###########################################################################
   // before checking roles, check default /confirm redirect, then route to roles
-  else if (user.value && to.path === '/confirm') {
+  else if (user.value && to.path === '/confirm') { // callback in nuxt.config.ts
     console.log("/confirm")
     // public users get redirected to apply
-    if (user.value.role === 'authenticated') return navigateTo('/apply')
-    return 
+    if (user.value.role === 'authenticated') return navigateTo('/apply') 
   }
 
-  // Role-based Access Control Navigation Limiters & Redirects
+  // ###########################################################################
+  // ####################### Role-based Access Control #########################
+  // ################### Navigation Limiters & Redirects #######################
+  // ###########################################################################
+  // CHECK role -> ENFORCE roleRoutes FOR role -> 
   else if (user.value) {
-
-    // /confirm/* (callback in nuxt.config.ts)
     if (user.value.role === 'authenticated') {
       console.log("user.value.role === 'authenticated'")
       if (!authenticatedRoutes.includes(to.path)) return navigateTo('/apply')
@@ -53,25 +59,25 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     switch(user.value.role) { // cases are of "elevating" access
       case 'applicant': {
         if (!applicantRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else {
-          console.log("admin accessing")
+        else { // route being traveled is within [role]Routes
+          console.log("applicant accessing")
         }
       }
       case 'tenant': {
         if (!tenantRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else {
-          console.log("admin accessing")
+        else { // route being traveled is within [role]Routes
+          console.log("tenant accessing")
         }
       }
       case 'worker': {
         if (!workerRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else {
-          console.log("admin accessing")
+        else { // route being traveled is within [role]Routes
+          console.log("worker accessing")
         }
       }
       case 'admin': { 
         if (!adminRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else {
+        else { // route being traveled is within [role]Routes
           console.log("admin accessing")
         }
       }
