@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { usePhone, useDOB } from '~/composables/formatters.js';
+
 
 // this page reads the user.raw_user_meta_data to see what they have entered so far, then will redirect
 // them to the appropriate location in the tks application process, with the data from the database they previously entered.
@@ -30,32 +32,14 @@
 // each step submits a form, and once supabase pings back 'good', we
 // increment the integer used to distinguish the step sent back.
 // supabase returns that the data was saved properly, and has a
-// 'current page': int() saved in the Applicant
+// 'current page': int() saved in the Applicant Table
+
+//  Applicant Table sets application process step
 
 // Send Phone verification code
-const sendResetPasswordLink = async () => {
-  try {
-    loading.value = true;
-    const { data, error } = await supabase.auth.resetPasswordForEmail(
-      email.value,
-      {
-        redirectTo: `${config.public.siteRootUrl}/auth/reset`
-      }
-    );
-    if (error) throw error;
-    else
-      notifyStore.notify(
-        'Password Reset link sent, check your email.',
-        NotificationType.Success
-      );
-  } catch (error) {
-    notifyStore.notify(error, NotificationType.Error);
-  } finally {
-    loading.value = false;
-  }
-};
+function submitform() {
 
-
+}
 function applyAs() { return  }
 
 const user = useSupabaseUser();
@@ -63,56 +47,143 @@ const supabase = useSupabaseClient();
 const notifyStore = useNotifyStore();
 const loading = ref(false);
 
+const first = ref('')
+const last = ref('')
+const role = ref('')
+
+// Turn this into a self-contained DOB input /component
+const dob = ref('')
+// Computed property that updates when dob.value changes
+const dobFormat = computed(() => useDOB(dob.value))
+// Update raw date string on input
+const updateDob = (value) => {
+  // Only store digits
+  dob.value = value.replace(/\D/g, '')
+}
+
+// Turn this into a self-contained phone input /component
+const phone = ref('')
+// Computed property that updates when phone.value changes
+const phoneFormat = computed(() => usePhone(phone.value))
+// Update raw phone number on input
+const updatePhone = (value) => {
+  phone.value = value.replace(/\D/g, '')
+}
+
+// Now, create applicant in Applicants table, but don't change user.role in supabase yet
+function verifyPhone() {
+
+}
 const script = [ // application control flow
-  'phone', 'name',
-  'tenant', 'worker',
-  'rental', 'skills',
+  'phone', 'rental', 'skills',
 ]
+
+
 watchEffect(() => {
   if (user.value) {
     // navigateTo('/auth/verify', { replace: true });
   }
 });
+
 </script>
 
 <template><div class="container mx-auto p-6 border">
 
-  <div class="text-center mb-12">
+  <div class="text-center mb-12 border">
     <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">
       Apply to TKS Apartments
     </h2>
   </div>
-
+  <!-- card container -->
   <div class="flex flex-col items-center pt-8 h-screen bg-gray-100 border">
-    <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg ">
-      <h2>Update Name & Phone:</h2>
-      <div class="flex gap-4">
-        <button @click="applyAs()">Tenant</button>
-      </div>
-      <h2>it actually makes sense for tenant to /apply and for workers to be added by an admin...</h2>
+
+
+    <!-- get applicant personal information component -->
+    <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-center">Personal Information</h1>
+
+      <form @submit.prevent="verifyPhone()" class="space-y-4">
+        
+        <div class="inline-flex w-full gap-3">
+          <div>
+            <label for="first" class="block mb-2 font-bold">First name:</label>
+            <input
+              v-model="first"
+              id="first"
+              type="text"
+              class="w-full p-2 border border-gray-400 rounded-md"
+              placeholder="Enter your first name"
+              maxlength="24"
+              required />
+          </div>
+
+          <div>
+            <label for="last" class="block mb-2 font-bold">Last name:</label>
+            <input
+              v-model="last"
+              id="last"
+              type="text"
+              class="w-full p-2 border border-gray-400 rounded-md"
+              placeholder="Enter your last name"
+              maxlength="24"
+              required />
+          </div>
+        </div>
+
+        <div class="inline-flex w-full gap-3">
+          <div>
+            <label for="role" class="block mb-2 font-bold">Role:</label>
+            <select
+              id="role"
+              v-model="role"
+              class="w-full p-2 border border-gray-400 rounded-md dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+              required
+            >
+              <option value="" disabled>Select:</option>
+              <option value="tenant">Tenant</option>
+              <option value="worker">Worker</option>              
+            </select>
+          </div>
+
+          <div>
+            <label for="dob" class="block mb-2 font-bold">Date of birth:</label>
+            <input
+              :value="dobFormat"
+            @input="updateDob($event.target.value)"
+              id="dob"
+              type="text"
+              class="w-[124px] p-2 border border-gray-400 rounded-md"
+              placeholder="MM/DD/YYYY"
+              maxlength="10"
+              required />
+          </div>
+
+          <div>
+            <label for="phone" class="block mb-2 font-bold">Phone:</label>
+            <input
+              :value="phoneFormat"
+              @input="updatePhone($event.target.value)"
+              id="phone"
+              type="phone"
+              class="w-[148px] p-2 border border-gray-400 rounded-md"
+              placeholder="(321) 654-0987"
+              maxlength="14"
+              required
+            />
+          </div>
+
+        </div>
+        
+        <button
+          :disabled="loading"
+          type="submit"
+          class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
+          Verify Phone
+        </button>
+
+      </form>
+
     </div>
   </div>
-
-  <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
-    <h1 class="text-3xl font-bold text-center">Forgot Pasword</h1>
-    <form @submit.prevent="sendResetPasswordLink" class="space-y-4">
-      <div>
-        <label for="email" class="block mb-2 font-bold">Email</label>
-        <input
-          v-model="email"
-          id="email"
-          type="email"
-          class="w-full p-2 border border-gray-400 rounded-md"
-          placeholder="Enter your email"
-          required />
-      </div>
-      <button
-        :disabled="loading || email === ''"
-        type="submit"
-        class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
-        Send Reset Password Link
-      </button>
-    </form>
-  </div>
-
-</div></template>
+</div>
+</template>
