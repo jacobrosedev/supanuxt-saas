@@ -5,8 +5,10 @@ export const useRoles = () => {
     const user = useSupabaseUser() 
     
     return {
-      isAdmin: computed(() => user.value?.role === 'admin'),
+      isAuthenticated: computed(() => user.value?.role === 'authenticated'),
+      isApplicant: computed(() => user.value?.role === 'applicant'),
+      isTenant: computed(() => user.value?.role === 'tenant'),
       isWorker: computed(() => user.value?.role === 'worker'),
-      isTenant: computed(() => user.value?.role === 'tenant')
+      isAdmin: computed(() => user.value?.role === 'admin')
     }
   }
