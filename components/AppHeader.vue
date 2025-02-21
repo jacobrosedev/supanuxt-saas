@@ -1,6 +1,6 @@
 <script setup lang="ts">
   const user = useSupabaseUser();
-  const { isAdmin, isWorker, isTenant } = useRoles()
+  const { isAuthenticated, isApplicant, isTenant, isWorker, isAdmin } = useRoles()
 </script>
 
 <template>
@@ -30,71 +30,83 @@
           <!-- RBAC hamburger options from useRoles.js composable -->
           <ul tabindex="0"
             class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
-            <!-- Admin User -->
-            <template v-if="isAdmin">
-              <h2>Admin Sidebar</h2>
-              <li><NuxtLink to="/auth/messages">Messages</NuxtLink></li>
-              <li><NuxtLink to="/admin/finance">Finance</NuxtLink></li>
-              
-              <!-- Admin Specific Routes -->
-              <li><NuxtLink to="/admin/units">Units</NuxtLink></li>
-              <li><NuxtLink to="/admin/requests">Requests</NuxtLink></li>
-              
-              <li><NuxtLink to="/admin/users">Users</NuxtLink></li>
-              <li><NuxtLink to="/admin/leases">Leases</NuxtLink></li>
-              <li><NuxtLink to="/admin/requests">Complaints</NuxtLink></li>
+
+            <!-- accessible to all -->
+
+
+            <!-- 'authenticated' User -->
+            <template v-if="isAuthenticated">
+              <h2>Role: Authenticated</h2>
+              <hr>
+              <li><NuxtLink to="/apply">Apply Online</NuxtLink></li>
             </template>
-            <hr>
-            <!-- Worker User -->
+
+            <!-- 'applicant' User -->
+            <template v-if="isTenant">
+              <h2>Role: Applicant</h2>
+              <li><NuxtLink to="/dashboard">Application</NuxtLink></li>
+            </template>
+
+            <!-- 'tenant' User -->
+            <template v-if="isTenant">
+              <h2>Role: Tenant</h2>
+              <li><NuxtLink to="/tenant/request">Request</NuxtLink></li>
+              <li><NuxtLink to="/tenant/complaint">Complaint</NuxtLink></li>
+              <!-- Tenant Specific Routes -->
+              <li><NuxtLink to="/tenant/payment">Payment</NuxtLink></li>
+              <li><NuxtLink to="/tenant/billing">Billing</NuxtLink></li>
+              <li><NuxtLink to="/tenant/lease">Lease</NuxtLink></li>
+            </template>
+
+            <!-- 'worker' User -->
             <template v-if="isWorker">
-              <h2>Worker Sidebar</h2>
-              <li><NuxtLink to="/auth/messages">Messages</NuxtLink></li>
+              <h2>Role: Worker</h2>
               <li><NuxtLink to="/w/requests">Requests</NuxtLink></li>
               <li><NuxtLink to="/w/receipts">Receipts</NuxtLink></li>
-
               <!-- Worker Specific Routes -->
               <li><NuxtLink to="/w/schedule">Schedule</NuxtLink></li>
               <li><NuxtLink to="/w/earnings">Earnings</NuxtLink></li>
             </template>
             <hr>
-            <!-- Tenant User -->
-            <template v-if="isTenant">
-              <h2>Tenant Sidebar</h2>
-              <li><NuxtLink to="/auth/messages">Messages</NuxtLink></li>
-              <li><NuxtLink to="/tenant/request">Request</NuxtLink></li>
-              <li><NuxtLink to="/tenant/request">Complaint</NuxtLink></li>
-
-              <!-- Tenant Specific Routes -->
-              <li><NuxtLink to="/tenant/payment">Payment</NuxtLink></li>
-              <li><NuxtLink to="/tenant/billing">Billing</NuxtLink></li>
-              <li><NuxtLink to="/tenant/lease">Lease</NuxtLink></li>
+          
+            <!-- 'admin' User -->
+            <template v-if="isAdmin">
+              <h2>Role: Admin</h2>
+              <li><NuxtLink to="/admin/finance">Finance</NuxtLink></li>
+              <!-- Admin Specific Routes -->
+              <li><NuxtLink to="/admin/units">Units</NuxtLink></li>
+              <li><NuxtLink to="/admin/requests">Requests</NuxtLink></li>
+              <li><NuxtLink to="/admin/users">Users</NuxtLink></li>
+              <li><NuxtLink to="/admin/leases">Leases</NuxtLink></li>
+              <li><NuxtLink to="/admin/requests">Complaints</NuxtLink></li>
             </template>
           </ul>
         </div>
       </template>
 
       <!-- Index Link-->
-      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl">
+      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200">
         TKS Apartments
       </NuxtLink>
     </div>
 
 
 
-
-    <template v-if="user">
+    <!-- Top nav banner quick links, like a hotbar for each role -->
 
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-          <li v-if="!user"><NuxtLink to="/apply">Apply</NuxtLink></li>
+          <li v-if="!user">
+            <NuxtLink class="btn btn-ghost normal-case text-xl"to="/apply">Apply</NuxtLink>
+          </li>
+          <li v-if="user">
+            <NuxtLink to="/dashboard" class="btn btn-ghost normal-case text-xl">Dashboard</NuxtLink>
+          </li>
           
         </ul>
-
-        <template v-if="user">
-          <NuxtLink to="/dashboard" class="btn btn-ghost normal-case text-xl">Dashboard</NuxtLink>
-        </template>
+          
       </div>
-    </template>
+
     <!-- Nav-Right User Account Icon -->
     <UserAccount v-if="user" :user="user" />
   </div>
