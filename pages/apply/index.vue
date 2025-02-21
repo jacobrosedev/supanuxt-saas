@@ -1,6 +1,13 @@
 <script setup lang="ts">
 
+// this page reads the user.raw_user_meta_data to see what they have entered so far, then will redirect
+// them to the appropriate location in the tks application process, with the data from the database they previously entered.
+// 
+// The application process may be long, so this allows us to handle page refreshes, or complete an application at a later time.
 
+// if the user is not signed in, they get redirected to /signup
+// if the user is signed in, but they haven't filled out their information, we load the ProfileComponent
+// if the profile is completed, we 
 
 
 // this page allows public users to create a supabase user, but then redirects them to either
