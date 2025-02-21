@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  // /auth/reset - password reset
   const supabase = useSupabaseClient();
 
   const notifyStore = useNotifyStore();
