@@ -4,21 +4,29 @@ export default defineNuxtRouteMiddleware(async (to) => {
 // it just checks if auth'd, can be stacked with rbac.ts to simplifying auth validation
 const user = useSupabaseUser()
 console.log("/middleware/auth.global.ts ->", to.path)
-const routeScope = ['/', '/signup', '/login', '/confirm', '/apply']
+const publicScope = ['/', '/signup', '/login', '/confirm', '/apply']
+const tenantScope = []
+const workerScope = []
+const adminScope = []
 
 // user == false
-if (!user) {
-  //  routing to apply, they need to create an account first
-  if (to.path === '/apply') return navigateTo('/signup') 
-  // if the user is not signed in, and traveling into
-  // any page NOT within publicRoutes, send them to login
-  if (!routeScope.includes(to.path)) return navigateTo('/login')
-  return // navigateTo('/');
+if (!user) return navigateTo('/')
+
+// else if user is true:
+//   they travel through /confirm (nuxt.config.ts)
+
+if (user.value) {
+  // user == true; RBAC Page Navigation Tree
+  switch(user.value.role) {
+    case 'authenticated': return navigateTo('/apply')
+    case 'tenant': return navigateTo('/auth/verify')
+    case 'tenant': return navigateTo('/auth/verify')
+    case 'worker': return navigateTo('/auth/verify')
+    case 'admin': return navigateTo('/auth/verify')
+    // if user is any other role than authenticated
+    return navigateTo('/')
+  }
+
 }
 
-// user == true; RBAC Page Navigation Tree
-switch(user.value) {
-  case 'authenticated': return navigateTo('/apply')
-  // if anything but authenticated
-  default: return to.path.startsWith('/auth/verify') ? undefined : navigateTo('/auth/verify')
-}}) 
+})
