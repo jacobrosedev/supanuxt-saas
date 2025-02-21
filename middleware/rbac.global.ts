@@ -5,13 +5,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   if (user.value) console.log("Supabase User:", user.value.role);
 
   const publicRoutes = [
-    '/', '/confirm', // nuxt.config.ts redirect, & forgot password
-    '/contact', '/privacy', '/terms' // information
+    '/', '/confirm', '/forgot', // nuxt.config.ts redirect, & forgot password
+    '/contact', '/privacy', '/terms', // information
+    '/unauthorized'
   ]
   // role can see all routes requiring user authentication
   const authenticatedRoutes = [
-    '/dashboard', '/auth/verify',
-    '/auth', '/auth/delete', '/auth/reset' // account, deletion + password reset
+    '/dashboard', '/messages', '/auth', '/verify',
+    '/auth/delete', '/auth/reset' // account, deletion + password reset
   ]
   // role can see submitted applications
   const roleSharedRoutes = [...publicRoutes, ...authenticatedRoutes, '/dashboard']
@@ -22,46 +23,62 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   // add public user-hidden & non-shared routes to roles
   publicRoutes.push('/signup')
-  authenticatedRoutes.push('/apply')
+  authenticatedRoutes.push('/apply') // /apply !important
 
-  // const combinedList = [...list1, ...list2]; // Returns [1, 2, 3, 4, 5, 6]
 
   // if public, and (to.path) NOT in public, redirect to public '/' home login
   if (!user.value) {
     console.log("no supabase user.value, checking publicRoutes...")
     if (!publicRoutes.includes(to.path)) return navigateTo('/') // public home
-    return // no user breakpoint
+  }
+
+  // before checking roles, check default /confirm redirect, then route to roles
+  else if (user.value && to.path === '/confirm') {
+    console.log("/confirm")
+    // public users get redirected to apply
+    if (user.value.role === 'authenticated') return navigateTo('/apply')
+    return 
   }
 
   // Role-based Access Control Navigation Limiters & Redirects
   else if (user.value) {
 
     // /confirm/* (callback in nuxt.config.ts)
-    // if (to.path === '/confirm') return //confirm will redirect
     if (user.value.role === 'authenticated') {
-      if (!authenticatedRoutes.includes(to.path)) return navigateTo('/auth')
+      console.log("user.value.role === 'authenticated'")
+      if (!authenticatedRoutes.includes(to.path)) return navigateTo('/apply')
     }
     
     // switch/case limits routing using "role-access" lists
     switch(user.value.role) { // cases are of "elevating" access
       case 'applicant': {
-        if (!applicantRoutes.includes(to.path)) return navigateTo('/auth/verify')
+        if (!applicantRoutes.includes(to.path)) return navigateTo('/unauthorized')
+        else {
+          console.log("admin accessing")
+        }
       }
       case 'tenant': {
-        if (!tenantRoutes.includes(to.path)) return navigateTo('/auth/verify')
+        if (!tenantRoutes.includes(to.path)) return navigateTo('/unauthorized')
+        else {
+          console.log("admin accessing")
+        }
       }
       case 'worker': {
-        if (!workerRoutes.includes(to.path)) return navigateTo('/auth/verify')
+        if (!workerRoutes.includes(to.path)) return navigateTo('/unauthorized')
+        else {
+          console.log("admin accessing")
+        }
       }
       case 'admin': { 
-        if (!authenticatedRoutes.includes(to.path) &&!adminRoutes.includes(to.path)) return navigateTo('/')
+        if (!adminRoutes.includes(to.path)) return navigateTo('/unauthorized')
+        else {
+          console.log("admin accessing")
+        }
       }
-      // if user is any other role than authenticated
-      default: return navigateTo('/')
     }
-    
   }
-  return // every route guard passed, route -> to.path
+  
+// every route guard passed, route -> to.path
 })
 
 
