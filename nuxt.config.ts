@@ -66,7 +66,7 @@ export default defineNuxtConfig({
     redirect: false,
     redirectOptions: {
       login: '/signin',
-      callback: '/confirm'
+      callback: '/auth/confirm'
     }
   },
 
