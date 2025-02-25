@@ -1,6 +1,13 @@
 <script setup lang="ts">
-  const user = useSupabaseUser();
-  const { isAuthenticated, isApplicant, isTenant, isWorker, isAdmin } = useRoles()
+const user = useSupabaseUser();
+const { isAuthenticated, isApplicant, isTenant, isWorker, isAdmin } = useRoles()
+console.log("AppHeader: ",
+user.value,
+isAuthenticated.value,
+isApplicant.value,
+isTenant.value,
+isWorker.value,
+isAdmin.value)
 </script>
 
 <template>
@@ -84,23 +91,29 @@
         </div>
       </template>
 
+
+
+
       <!-- Index Link-->
       <NuxtLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200">
         TKS Apartments
       </NuxtLink>
     </div>
-
-
-
     <!-- Top nav banner quick links, like a hotbar for each role -->
-
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
           <li v-if="!user">
-            <NuxtLink class="btn btn-ghost normal-case text-xl"to="/apply">Apply</NuxtLink>
+            <NuxtLink class="btn btn-ghost normal-case text-xl bg-gray-200"to="/apply">Apply Online</NuxtLink>
           </li>
           <li v-if="user">
             <NuxtLink to="/dashboard" class="btn btn-ghost normal-case text-xl">Dashboard</NuxtLink>
+          </li>
+
+          <!-- 'authenticated' User -->
+          <li v-if="isAuthenticated">
+            <NuxtLink to="/apply" class="btn btn-ghost normal-case text-xl bg-gray-200">
+              Applying now
+           </NuxtLink>
           </li>
           
         </ul>
