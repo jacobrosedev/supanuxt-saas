@@ -2,12 +2,13 @@
 const user = useSupabaseUser();
 const { isAuthenticated, isApplicant, isTenant, isWorker, isAdmin } = useRoles()
 console.log("AppHeader: ",
-user.value,
-isAuthenticated.value,
-isApplicant.value,
-isTenant.value,
-isWorker.value,
-isAdmin.value)
+  user.value,
+  isAuthenticated.value,
+  isApplicant.value,
+  isTenant.value,
+  isWorker.value,
+  isAdmin.value
+)
 </script>
 
 <template>
@@ -16,7 +17,7 @@ isAdmin.value)
 
     <div class="navbar-start">
       
-      <template v-if="user">
+      <template>
         <!-- Hamburger Menu  -->
         <div class="dropdown">
           <!-- Hamburger Icon -->
@@ -39,13 +40,18 @@ isAdmin.value)
             class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
 
             <!-- accessible to all -->
-
+            <template v-if="isAuthenticated">
+              <h2>Role: null</h2>
+              <hr>
+              <li><NuxtLink to="/login">Login</NuxtLink></li>
+              <li><NuxtLink to="/signup">Signup</NuxtLink></li>
+            </template>
 
             <!-- 'authenticated' User -->
             <template v-if="isAuthenticated">
               <h2>Role: Authenticated</h2>
               <hr>
-              <li><NuxtLink to="/apply">Apply Online</NuxtLink></li>
+              <li><NuxtLink to="/apply">Apply Now</NuxtLink></li>
             </template>
 
             <!-- 'applicant' User -->
@@ -99,25 +105,35 @@ isAdmin.value)
         TKS Apartments
       </NuxtLink>
     </div>
+
+
     <!-- Top nav banner quick links, like a hotbar for each role -->
       <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-          <li v-if="!user">
-            <NuxtLink class="btn btn-ghost normal-case text-xl bg-gray-200"to="/apply">Apply Online</NuxtLink>
-          </li>
-          <li v-if="user">
-            <NuxtLink to="/dashboard" class="btn btn-ghost normal-case text-xl">Dashboard</NuxtLink>
-          </li>
+          
+          <template v-if="!user">
+            <li><NuxtLink class="btn btn-ghost normal-case text-xl bg-gray-200" to="/signup">Sign Up</NuxtLink></li>
+          </template>
 
-          <!-- 'authenticated' User -->
-          <li v-if="isAuthenticated">
-            <NuxtLink to="/apply" class="btn btn-ghost normal-case text-xl bg-gray-200">
-              Applying now
-           </NuxtLink>
-          </li>
+          <template v-if="user">
+            <template v-if="isAuthenticated">
+              <li>
+                <NuxtLink to="/apply"
+                  class="btn btn-ghost normal-case text-xl bg-gray-200">
+                    Applying now
+                </NuxtLink>
+              </li>
+            </template>
+
+            <template v-if="isTenant || isWorker || isAdmin">
+              <li>
+                <NuxtLink to="/dashboard" class="btn btn-ghost normal-case text-xl">Dashboard</NuxtLink>
+              </li>
+            </template>
+          </template>
+
           
         </ul>
-          
       </div>
 
     <!-- Nav-Right User Account Icon -->
