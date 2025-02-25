@@ -2,7 +2,6 @@
   const user = useSupabaseUser();
   const supabase = useSupabaseClient();
 
-  const accountStore = useAccountStore();
   const notifyStore = useNotifyStore();
 
   const loading = ref(false);
