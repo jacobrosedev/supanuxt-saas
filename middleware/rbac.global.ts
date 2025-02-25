@@ -1,100 +1,145 @@
+import { useRBACStore } from '~/stores/rbac'
+// Top-Down RBAC Navigation from 'public' to 'admin'
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  // Top-Down RBAC Navigation from 'public' to 'admin'
-  const user = useSupabaseUser();
-  console.log(`/middleware/rbac.global.ts: '${from.path}' -> '${to.path}'`);
-  if (user.value) console.log("Supabase User:", user.value.role);
+  const rbacStore = useRBACStore()
+  const supabase = useSupabaseClient()
+  const user = useSupabaseUser()
 
+  console.log(`/middleware/rbac.global.ts: '${from.path}' -> '${to.path}'`)
+  if (user.value) console.log("Supabase User:", user.value.role)
+
+  // Get initial session and initialize store
+  const { data: { session } } = await supabase.auth.getSession()
+  await rbacStore.initialize(session?.user || null)
+
+  
+
+
+
+  
+
+  // ###########################################################################
+  // ######################### DEFINE ROUTE COLLECTIONS ########################
+  // ###########################################################################
   const publicRoutes = [
     '/', '/confirm', '/forgot', // nuxt.config.ts redirect, & forgot password
-    '/contact', '/privacy', '/terms', // information
-    '/unauthorized'
+    '/contact', '/privacy', '/terms',
+    '/unauthorized', '/signup'
   ]
   // role can see all routes requiring user authentication
   const authenticatedRoutes = [
     '/dashboard', '/messages', '/auth', '/apply', '/verify',
     '/auth/delete', '/auth/reset' // account, deletion + password reset
   ]
-  // role can see submitted applications
+
   const roleSharedRoutes = [...publicRoutes, ...authenticatedRoutes]
-  const applicantRoutes = [...roleSharedRoutes,]
-  const tenantRoutes = [...roleSharedRoutes,]
-  const workerRoutes = [...roleSharedRoutes,]
-  const adminRoutes = [...roleSharedRoutes,]
+  publicRoutes.push('/signup') // add public hidden-to-user routes
+  const applicantRoutes = [...roleSharedRoutes]
+  const tenantRoutes = [...roleSharedRoutes, "/tenant", // this should be covered by a a star guard /tenant/*
+    "/tenant/request",
+    "/tenant/complaint",
+    "/tenant/payment","/tenant/payment/success","/tenant/payment/cancel","/tenant/payment/fail",
+    "/tenant/billing",
+    "/tenant/lease"
+  ]
+  const workerRoutes = [...roleSharedRoutes,
+    "/tenant/request",
+    "/tenant/complaint",
+    "/tenant/payment",
+    "/tenant/billing",
+    "/tenant/lease"
+  ]
+  const adminRoutes = [...roleSharedRoutes]
 
-  // add public hidden-to-user routes
-  publicRoutes.push('/signup')
 
+  
 
   // ###########################################################################
   // ####################### PUBLIC LIMITERS & REDIRECTS #######################
   // ###########################################################################
   // if public, and (to.path) NOT in public, redirect to public '/' home login
+  // Handle public access
   if (!user.value) {
     console.log("no supabase user.value, checking publicRoutes...")
-    if (!publicRoutes.includes(to.path)) return navigateTo('/') // public home
+    if (!publicRoutes.includes(to.path)) {
+      return navigateTo('/')
+    }
+    return
   }
 
+
+
   // ###########################################################################
-  // ########################### USER CONFIRMATION #############################
+  // ####################### USER CONFIRMATION PROCESS #########################
   // ###########################################################################
-  // before checking roles, check default /confirm redirect, then route to roles
-  else if (user.value && to.path === '/confirm') { // callback in nuxt.config.ts
+  // before checking roles, (nuxt.config) /confirm redirect, then route to roles
+ 
+  // Handle confirmation process
+  if (user.value && ['/signup', '/confirm', '/apply'].includes(to.path)) {
     console.log("/confirm")
-    // public users get redirected to apply
-    if (user.value.role === 'authenticated') return navigateTo('/apply') 
+    if (user.value.role === 'authenticated') {
+      return navigateTo('/apply')
+    }
+    return navigateTo('/apply')
   }
 
   // ###########################################################################
   // ####################### Role-based Access Control #########################
   // ################### Navigation Limiters & Redirects #######################
   // ###########################################################################
-  // CHECK role -> ENFORCE roleRoutes FOR role -> 
-  else if (user.value) {
-    if (user.value.role === 'authenticated') {
-      console.log("user.value.role === 'authenticated'")
-      if (!authenticatedRoutes.includes(to.path)) return navigateTo('/apply')
+  // user EXISTS -> CHECK role -> ENFORCE roleRoutes FOR role -> redirect /apply
+  // Handle authenticated users
+  if (user.value.role === 'authenticated') {
+    console.log("user.value.role === 'authenticated'")
+    if (!authenticatedRoutes.includes(to.path)) {
+      return navigateTo('/apply')
     }
-    
-    // switch/case limits routing using "role-access" lists
-    switch(user.value.role) { // cases are of "elevating" access
-      case 'applicant': {
-        if (!applicantRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else { // route being traveled is within [role]Routes
-          console.log("applicant accessing")
-        }
-      }
-      case 'tenant': {
-        if (!tenantRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else { // route being traveled is within [role]Routes
-          console.log("tenant accessing")
-        }
-      }
-      case 'worker': {
-        if (!workerRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else { // route being traveled is within [role]Routes
-          console.log("worker accessing")
-        }
-      }
-      case 'admin': { 
-        if (!adminRoutes.includes(to.path)) return navigateTo('/unauthorized')
-        else { // route being traveled is within [role]Routes
-          console.log("admin accessing")
-        }
-      }
+    return
+  }
+
+  // Handle role-based route access
+  if (user.value) {
+    const role = user.value.role
+    let allowedRoutes: string[] = []
+
+    switch(role) {
+      case 'applicant':
+        allowedRoutes = applicantRoutes
+        console.log("applicant accessing")
+        break
+      case 'tenant':
+        allowedRoutes = tenantRoutes
+        console.log("tenant accessing")
+        break
+      case 'worker':
+        allowedRoutes = workerRoutes
+        console.log("worker accessing")
+        break
+      case 'admin':
+        allowedRoutes = adminRoutes
+        console.log("admin accessing")
+        break
+      default:
+        allowedRoutes = publicRoutes
+    }
+
+    if (!allowedRoutes.includes(to.path)) {
+      return navigateTo('/unauthorized')
     }
   }
-  
-// every route guard passed, route -> to.path
+
+  // Additional permission-based checks from store
+  const requiredRole = to.meta.requiredRole as string
+  const requiredPermission = to.meta.requiredPermission as string
+
+  if (requiredRole && rbacStore.role !== requiredRole) {
+    return navigateTo('/unauthorized')
+  }
+
+  if (requiredPermission && !rbacStore.hasPermission(requiredPermission)) {
+    return navigateTo('/unauthorized')
+  }
 })
-
-
-
-
-
-
-
-
-
 
 
 
