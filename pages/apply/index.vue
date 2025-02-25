@@ -138,7 +138,7 @@ watchEffect(() => {
             <label for="phone" class="block mb-2 font-bold">Phone:</label>
             <input
               :value="phoneFormat"
-              @input="(e) => updatePhone(e.target.value)"
+              @input="(event) => updatePhone(event.target.value)"
               id="phone"
               type="phone"
               class="w-[128px] p-2 border border-gray-400 rounded-md"
@@ -153,7 +153,7 @@ watchEffect(() => {
             <label for="dob" class="block mb-2 font-bold">Date of birth:</label>
             <input
               :value="dobFormat"
-            @input="(e) => updateDob(e.target.value)"
+            @input="(event) => updateDob(event.target.value)"
               id="dob"
               type="text"
               class="w-[124px] p-2 border border-gray-400 rounded-md"
