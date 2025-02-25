@@ -44,28 +44,25 @@ function applyAs() { return  }
 
 const user = useSupabaseUser();
 const supabase = useSupabaseClient();
-const notifyStore = useNotifyStore();
-const loading = ref(false);
+const loading = ref(true);
+//  load in applicant data from Applicant Table, if data present for user.uuid
+// then if data complete, redirect to either /tenant or /worker
+const notifyStore = useNotifyStore(); //useApplyStore() instead
 
-const first = ref('')
-const last = ref('')
-const role = ref('')
+const first = ref('');
+const last = ref('');
+const role = ref('');
+
 
 // Turn this into a self-contained DOB input /component
 const dob = ref('')
-// Computed property that updates when dob.value changes
 const dobFormat = computed(() => useDOB(dob.value))
-// Update raw date string on input
 const updateDob = (value) => {
-  // Only store digits
   dob.value = value.replace(/\D/g, '')
 }
-
 // Turn this into a self-contained phone input /component
 const phone = ref('')
-// Computed property that updates when phone.value changes
 const phoneFormat = computed(() => usePhone(phone.value))
-// Update raw phone number on input
 const updatePhone = (value) => {
   phone.value = value.replace(/\D/g, '')
 }
@@ -78,11 +75,13 @@ const script = [ // application control flow
   'phone', 'rental', 'skills',
 ]
 
-
+// we're done loading now, watch refs...
+loading.value = false;
 watchEffect(() => {
   if (user.value) {
     // navigateTo('/auth/verify', { replace: true });
   }
+   
 });
 
 </script>
@@ -100,7 +99,7 @@ watchEffect(() => {
 
     <!-- get applicant personal information component -->
     <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold text-center">Personal Information</h1>
+      <h1 class="text-3xl font-bold text-center">Personal Information Entry</h1>
 
       <form @submit.prevent="verifyPhone()" class="space-y-4">
         
@@ -157,18 +156,18 @@ watchEffect(() => {
             @input="(e) => updateDob(e.target.value)"
               id="dob"
               type="text"
-              class="w-[116px] p-2 border border-gray-400 rounded-md"
+              class="w-[124px] p-2 border border-gray-400 rounded-md"
               placeholder="MM/DD/YYYY"
               maxlength="10"
               required />
           </div>
 
           <div>
-            <label for="role" class="block mb-2 font-bold">Role:</label>
+            <label for="role" class="block mb-2 font-bold">Role Type:</label>
             <select
               id="role"
               v-model="role"
-              class="w-[100px] p-2 border border-gray-400 rounded-md"
+              class="w-[120px] p-2 border border-gray-400 rounded-md"
               required
             > <option value="" disabled>Select:</option>
               <option value="tenant">Tenant</option>
