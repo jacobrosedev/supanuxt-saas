@@ -47,7 +47,6 @@
 
   watchEffect(async () => {
     if (user.value) {
-      await accountStore.init();
       navigateTo('/dashboard', { replace: true });
     }
   });
