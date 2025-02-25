@@ -9,8 +9,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   if (user.value) console.log("Supabase User:", user.value.role)
 
   // Get initial session and initialize store
-  const { data: { session } } = await supabase.auth.getSession()
-  await rbacStore.initialize(session?.user || null)
+  // const { data: { session } } = await supabase.auth.getSession()
+  // await rbacStore.initialize(session?.user || null)
 
   
 
