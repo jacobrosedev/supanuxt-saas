@@ -7,7 +7,7 @@
     <div class="text-center mb-12">
       <h2
         class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">
-        Admin Fix Requests
+        Tenant | Worker Application Status
       </h2>
     </div>
 

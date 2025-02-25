@@ -1,7 +1,17 @@
+<script setup lang="ts">
+
+// address search bar:
+//   available rentals near you
+// 
+</script>
 <template>
-    <div class="prose lg:prose-xl m-5">
-      <p>Tenant Application</p>
-      <p>address search bar</p>
-      <p>available rentals near you</p>
+  <div class="container mx-auto p-6">
+    <div class="text-center mb-12">
+      <h2
+        class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">
+        Tenant Application Process
+      </h2>
     </div>
-  </template>
+
+  </div>
+</template>
