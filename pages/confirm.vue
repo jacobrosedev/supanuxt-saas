@@ -6,9 +6,10 @@
     user, // user might not be logged in yet
     () => {
       if (user.value) {
+        console.log("LOGIN REDIRECT - /pages/confirm.vue")
         if (user.value.role === 'authenticated') return navigateTo('/apply');
-        else if (user.value.role === 'applicant') return navigateTo('/verify');
-        else return navigateTo('/dashboard'); // tenant, worker, admin
+        else if (user.value.role === 'applicant') return navigateTo('/apply/status');
+        return navigateTo('/dashboard', { replace: true }); // tenant, worker, admin
       }
     },
     { immediate: true }
