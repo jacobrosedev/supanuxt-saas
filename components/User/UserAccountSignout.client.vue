@@ -1,16 +1,16 @@
 <script setup lang="ts">
   const supabase = useSupabaseClient();
-  const accountStore = useAccountStore();
 
-  onMounted(async () => {
-    await accountStore.init();
-  });
+  // onMounted(async () => {
+  //   await accountStore.init();
+  // });
 
   async function signout() {
+    console.log("LOGOUT REDIRECT: /components/User/UserAccountSignout.client.vue")
     await supabase.auth.signOut();
-    if (accountStore) {
-      accountStore.signout();
-    }
+    // if (accountStore) {
+    //   accountStore.signout();
+    // }
     navigateTo('/', { replace: true });
   }
 </script>
