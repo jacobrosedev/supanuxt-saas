@@ -47,7 +47,7 @@
 
   watchEffect(async () => {
     if (user.value) {
-      navigateTo('/dashboard', { replace: true });
+      navigateTo('/confirm', { replace: true });
     }
   });
 </script>
