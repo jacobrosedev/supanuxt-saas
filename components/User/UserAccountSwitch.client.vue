@@ -1,16 +1,21 @@
 <script setup lang="ts">
-  import { storeToRefs } from 'pinia';
+// import { storeToRefs } from 'pinia';
+const user = useSupabaseUser()
+  // const accountStore = useAccountStore();
+  // const { dbUser, activeAccountId } = storeToRefs(accountStore);
 
-  const accountStore = useAccountStore();
-  const { dbUser, activeAccountId } = storeToRefs(accountStore);
-
-  onMounted(async () => {
-    await accountStore.init();
-  });
+  // onMounted(async () => {
+  //   await accountStore.init();
+  // });
 </script>
 
 <template>
-  <template v-if="dbUser?.memberships && dbUser?.memberships.length > 1">
+  <div>
+    <template v-if="user">
+      Role: {{ user.role }}
+    </template>
+  </div>
+  <!-- <template v-if="dbUser?.memberships && dbUser?.memberships.length > 1">
     <li>Switch Account</li>
     <li v-for="membership in dbUser?.memberships">
       <a
@@ -23,5 +28,5 @@
         {{ membership.account.name }} (pending)
       </span>
     </li>
-  </template>
+  </template> -->
 </template>
