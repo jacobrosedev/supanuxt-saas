@@ -40,18 +40,15 @@ const user = useSupabaseUser();
           <template v-if="user">
             <!-- 'authenticated' Specific Routes -->
             <template v-if="user.role === 'authenticated'">
-              <h2>Role: Authenticated</h2>
               <hr>
               <li><NuxtLink to="/apply">Apply Now</NuxtLink></li>
             </template>
             <!-- 'applicant' Specific Routes -->
             <template v-else-if="user.role === 'applicant'">
-              <h2>Role: Applicant</h2>
               <li><NuxtLink to="/dashboard">Application</NuxtLink></li>
             </template>
             <!-- 'tenant' Specific Routes -->
             <template v-else-if="user.role === 'tenant'">
-              <h2>Role: Tenant</h2>
               <li><NuxtLink to="/tenant/request">Request</NuxtLink></li>
               <li><NuxtLink to="/tenant/complaint">Complaint</NuxtLink></li>
               <li><NuxtLink to="/tenant/payment">Payment</NuxtLink></li>
@@ -60,7 +57,6 @@ const user = useSupabaseUser();
             </template>
             <!-- 'worker' Specific Routes -->
             <template v-else-if="user.role === 'worker'">
-              <h2>Role: Worker</h2>
               <li><NuxtLink to="/w/requests">Requests</NuxtLink></li>
               <li><NuxtLink to="/w/receipts">Receipts</NuxtLink></li>
               <li><NuxtLink to="/w/schedule">Schedule</NuxtLink></li>
@@ -68,7 +64,6 @@ const user = useSupabaseUser();
             </template>
             <!-- 'admin' Specific Routes -->
             <template v-else-if="user.role === 'admin'">
-              <h2>Role: Admin</h2>
               <li><NuxtLink to="/admin/finance">Finance</NuxtLink></li>
               <li><NuxtLink to="/admin/units">Units</NuxtLink></li>
               <li><NuxtLink to="/admin/requests">Requests</NuxtLink></li>
@@ -86,9 +81,17 @@ const user = useSupabaseUser();
 
 
       <!-- Index Link-->
-      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200">
-        TKS Apartments
-      </NuxtLink>
+      <template v-if="!user">
+        <NuxtLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200">
+          TKS Apartments
+        </NuxtLink>
+      </template>
+      <template v-else>
+        <NuxtLink to="/dashboard" class="btn btn-ghost normal-case text-xl bg-gray-200">
+          TKS Dashboard
+        </NuxtLink>
+      </template>
+      
     </div>
 
 
