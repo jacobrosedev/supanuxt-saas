@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePhone, useDOB } from '~/composables/formatters.js';
+
 
 
 // this page reads the user.raw_user_meta_data to see what they have entered so far, then will redirect
@@ -34,49 +34,39 @@ import { usePhone, useDOB } from '~/composables/formatters.js';
 // supabase returns that the data was saved properly, and has a
 // 'current page': int() saved in the Applicant Table
 
-//  Applicant Table sets application process step
+const first = ref('')
+const last = ref('')
+const phone = ref('')
+const dob = ref('')
+const role = ref('')
 
-// Send Phone verification code
-function submitform() {
+const submit = async () => {
+  console.log(first.value, last.value, phone.value, dob.value, role.value, )
 
-}
-function applyAs() { return  }
+  // send info to supabase
+  // wait till server sends 6-digit code, success returns
+  // const { data, error } = await supabase.auth.updateUser({
+  //   phone: phone.value,
+  // })
+  // .catch(error => {
+  //   console.error('There was a problem fetching the data:', error);
+  //   throw error; // Re-throw the error to propagate it further if needed
+  // });
+  // revalidate supabase user, user.phone == true, redirect to /verify
+  //  navigateTo('/verify')
+};
+
+
+
+const notifyStore = useNotifyStore(); //useApplyStore() instead
+
 
 const user = useSupabaseUser();
 const supabase = useSupabaseClient();
-const loading = ref(true);
-//  load in applicant data from Applicant Table, if data present for user.uuid
-// then if data complete, redirect to either /tenant or /worker
-const notifyStore = useNotifyStore(); //useApplyStore() instead
-
-const first = ref('');
-const last = ref('');
-const role = ref('');
 
 
-// Turn this into a self-contained DOB input /component
-const dob = ref('')
-const dobFormat = computed(() => useDOB(dob.value))
-const updateDob = (value) => {
-  dob.value = value.replace(/\D/g, '')
-}
-// Turn this into a self-contained phone input /component
-const phone = ref('')
-const phoneFormat = computed(() => usePhone(phone.value))
-const updatePhone = (value) => {
-  phone.value = value.replace(/\D/g, '')
-}
 
-// Now, create applicant in Applicants table, but don't change user.role in supabase yet
-function verifyPhone() {
 
-}
-const script = [ // application control flow
-  'phone', 'rental', 'skills',
-]
-
-// we're done loading now, watch refs...
-loading.value = false;
 watchEffect(() => {
   if (user.value) {
     // navigateTo('/auth/verify', { replace: true });
@@ -84,25 +74,29 @@ watchEffect(() => {
    
 });
 
+// 0 = LoadingSpinner (each supabase update until loaded)
+// 1 = ApplyPersonal, 2 = VerifySiXDigitCode
+// 3 = ApplyTenant, 4 = ApplyWorker
+const stage = ref(1)
 </script>
 
-<template><div class="container mx-auto p-6 border">
+<template>
+  <div class="container mx-auto p-6 border">
+    <div class="text-center  border">
+      <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">
+        TKS Application
+      </h2>
+    </div>
 
-  <div class="text-center mb-12 border">
-    <h2 class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl mb-4">
-      Apply to TKS Apartments
-    </h2>
-  </div>
-  <!-- card container -->
-  <div class="flex flex-col items-center pt-8 h-screen bg-gray-100 border">
+    <!-- card container -->
+    <div class="flex flex-col items-center pt-8 h-screen bg-gray-100 border">
+    
 
+      <!-- get applicant personal information component -->
+      <form @submit.prevent="submit()" class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center">Personal Information</h1>
 
-    <!-- get applicant personal information component -->
-    <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold text-center">Personal Information Entry</h1>
-
-      <form @submit.prevent="verifyPhone()" class="space-y-4">
-        
+          
         <!-- first row of inputs -->
         <div class="inline-flex w-full gap-3">
           <div>
@@ -133,34 +127,9 @@ watchEffect(() => {
         <!-- second row of inputs -->
         <div class="inline-flex w-full gap-3">
 
-          <!-- this should be it's own /component with coupled /composable -->
-          <div>
-            <label for="phone" class="block mb-2 font-bold">Phone:</label>
-            <input
-              :value="phoneFormat"
-              @input="(event) => updatePhone(event.target.value)"
-              id="phone"
-              type="phone"
-              class="w-[128px] p-2 border border-gray-400 rounded-md"
-              placeholder="(321) 654-0987"
-              maxlength="14"
-              required
-            />
-          </div>
+          <InputPhone v-model="phone" required />
 
-          <!-- this should be it's own /component with coupled /composable -->
-          <div>
-            <label for="dob" class="block mb-2 font-bold">Date of birth:</label>
-            <input
-              :value="dobFormat"
-            @input="(event) => updateDob(event.target.value)"
-              id="dob"
-              type="text"
-              class="w-[124px] p-2 border border-gray-400 rounded-md"
-              placeholder="MM/DD/YYYY"
-              maxlength="10"
-              required />
-          </div>
+          <InputDate v-model="dob" required />
 
           <div>
             <label for="role" class="block mb-2 font-bold">Role Type:</label>
@@ -179,15 +148,13 @@ watchEffect(() => {
         </div>
         
         <button
-          :disabled="loading"
           type="submit"
           class="w-full py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
           Verify Phone
         </button>
 
-      </form>
 
+      </form>
     </div>
   </div>
-</div>
 </template>
