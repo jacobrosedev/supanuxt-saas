@@ -6,15 +6,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   ]
   const authenticatedRoutes = [...publicRoutes,
     '/dashboard', '/messages', 
-    '/apply', '/apply/tenant', "/apply/worker",
-    '/auth', '/auth/verify', '/auth/delete', '/auth/reset'
+    '/apply', '/verify',
+    '/auth', '/auth/delete', '/auth/reset'
   ]
   const roleRoutes = {
     "authenticated": authenticatedRoutes,
     "applicant": [...authenticatedRoutes, '/apply/status'],
     "tenant": [...authenticatedRoutes,
       "/tenant/request", "/tenant/complaint", "/tenant/billing", "/tenant/lease",
-      "/tenant/payment","/tenant/payment/success","/tenant/payment/cancel","/tenant/payment/fail",
+      "/pay","/pay/success","/pay/cancel","/pay/fail",
     ],
     "worker": [...authenticatedRoutes],
     "admin": [...authenticatedRoutes],
