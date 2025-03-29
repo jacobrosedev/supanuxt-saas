@@ -1,4 +1,5 @@
 export const usePhone = (value) => {
+  // reactively build this -> (865) 999-3333
   const cleaned = value.replace(/\D/g, '')
   const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
   
@@ -19,6 +20,7 @@ export const usePhone = (value) => {
 
 
 export const useDOB = (value) => {
+  // reactively build this -> MM/DD/YYYY
   const cleaned = value.replace(/\D/g, '')
   const match = cleaned.match(/^(\d{2})(\d{2})(\d{4})$/)
   if (match) {
