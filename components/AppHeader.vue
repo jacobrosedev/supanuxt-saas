@@ -51,7 +51,7 @@ const user = useSupabaseUser();
             <template v-else-if="user.role === 'tenant'">
               <li><NuxtLink to="/tenant/request">Request</NuxtLink></li>
               <li><NuxtLink to="/tenant/complaint">Complaint</NuxtLink></li>
-              <li><NuxtLink to="/tenant/payment">Payment</NuxtLink></li>
+              <li><NuxtLink to="/pay">Pay Rent</NuxtLink></li>
               <li><NuxtLink to="/tenant/billing">Billing</NuxtLink></li>
               <li><NuxtLink to="/tenant/lease">Lease</NuxtLink></li>
             </template>
