@@ -40,6 +40,7 @@
     "@trpc/server": "^10.45.1",
     "daisyui": "^4.7.2",
     "generate-password-ts": "^1.6.5",
+    "openai": "^4.87.3",
     "pinia": "^2.1.7",
     "stripe": "^14.17.0",
     "superjson": "^2.2.1",
